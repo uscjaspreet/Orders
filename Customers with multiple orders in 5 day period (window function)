@@ -1,0 +1,20 @@
+with nextOrderDate as (
+
+  select
+    CustomerID,
+    OrderDate,
+    lead(OrderDate)
+      over (partition by CustomerID order by OrderDate) as nextOrderDt
+  
+  from orders
+
+)
+
+select
+  CustomerID,
+  OrderDate,
+  nextOrderDt,
+  datediff(dd, OrderDate, NextOrderDate) as daysBetweenOrders
+from NextOrderDate
+where
+  datediff(dd, OrderDate, NextOrderDate) <= 5
